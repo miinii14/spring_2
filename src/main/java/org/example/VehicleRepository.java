@@ -20,18 +20,34 @@ public class VehicleRepository implements IVehicleRepository{
     }
 
     @Override
-    public void rentVehicle(Vehicle vehicle){
+    public void addVehicle(Vehicle vehicle) {
+        vehicles.add(vehicle);
+    }
+
+    @Override
+    public void removeVehicle(String registry) {
+        for(Vehicle vehicle: vehicles){
+            if(vehicle.getRegistry().equals(registry)){
+                vehicles.remove(vehicle);
+            }
+        }
+    }
+
+    @Override
+    public void rentVehicle(Vehicle vehicle, User user){
         if(!vehicle.isRented()){
             vehicle.setRented(true);
+            user.rentedVehicleRegistry = vehicle.getRegistry();
         }else{
             System.out.println("The vehicle is already rented");
         }
     }
 
     @Override
-    public void returnVehicle(Vehicle vehicle) {
+    public void returnVehicle(Vehicle vehicle, User user) {
         if(vehicle.isRented()){
             vehicle.setRented(false);
+            user.rentedVehicleRegistry = null;
         }else{
             System.out.println("The vehicle isn't rented yet");
         }
