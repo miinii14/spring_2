@@ -78,7 +78,7 @@ public class User {
                 .toString();
     }
 
-    public enum Role {
+    public static enum Role {
         USER,ADMIN;
     }
 

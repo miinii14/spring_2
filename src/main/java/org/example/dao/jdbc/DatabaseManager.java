@@ -16,9 +16,9 @@ public class DatabaseManager {
         return DatabaseManager.instace;
     }
     private DatabaseManager(){
-        this.url = "jdbc:mysql://localhost:3306/spring2024";
-        this.user = "root";
-        this.password = "***";
+        this.url = "jdbc:postgresql://ruby.db.elephantsql.com/wtrkeyww";
+        this.user = "wtrkeyww";
+        this.password = "4HU8vMd1GpEgfIxhrvH1PqHG4Gb7l3Or";
     }
 
     public Connection getConnection() throws SQLException {

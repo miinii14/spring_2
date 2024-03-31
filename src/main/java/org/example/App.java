@@ -6,6 +6,7 @@ import org.example.dao.IVehicleRepository;
 import org.example.dao.jdbc.JdbcUserRepository;
 import org.example.dao.jdbc.JdbcVehicleRepository;
 import org.example.model.Car;
+import org.example.model.Motorcycle;
 import org.example.model.User;
 import org.example.model.Vehicle;
 
@@ -27,6 +28,7 @@ public class App {
 
         String response = "";
         boolean running=true;
+            System.out.println(ivr.getVehicle("Lu1000"));
         while(running) {
 
             System.out.println("-----------MENU------------");
@@ -52,24 +54,59 @@ public class App {
                     System.out.println("plates:");
                     String plate = scanner.nextLine();
                     ivr.rentVehicle(plate,user.getLogin());
-                    user = iur.getUser(user.getLogin());
                     break;
                 case "2":
-                    System.out.println("function for return car");
+                    System.out.println("plates:");
+                    ivr.returnVehicle(scanner.nextLine(), user.getLogin());
                     break;
                 case "6":
+                    if(user.getRole().toString().equals("USER")){
+                        System.out.println("no permissions");
+                        break;
+                    }
                     System.out.println("add car (only) separator is ; ");
                     ////Motorcycle(String brand, String model, int year, double price, String plate, String category)
                     String line = scanner.nextLine();
                     String[] arr = line.split(";");
-                    ivr.addVehicle(
-                            new Car(arr[0],
-                                    arr[1],
-                                    Integer.parseInt(arr[2]),
-                                    Double.parseDouble(arr[3]),
-                                    arr[4]));
+                    if (arr.length == 5){
+                        ivr.addVehicle(
+                                new Car(arr[0],
+                                        arr[1],
+                                        Integer.parseInt(arr[2]),
+                                        Double.parseDouble(arr[3]),
+                                        arr[4]));
+                    }else{
+                        ivr.addVehicle(
+                                new Motorcycle(arr[0],
+                                        arr[1],
+                                        Integer.parseInt(arr[2]),
+                                        Double.parseDouble(arr[3]),
+                                        arr[4], arr[5]));
+                    }
+
+                    break;
+                case "7":
+                    if(user.getRole().toString().equals("USER")){
+                        System.out.println("no permissions");
+                        break;
+                    }
+                    ivr.removeVehicle(scanner.nextLine());
+                    break;
+                case "8":
+                    if(user.getRole().toString().equals("USER")){
+                        System.out.println("no permissions");
+                        break;
+                    }
+                    String login = scanner.nextLine();
+                    String password = Authenticator.hashPassword(scanner.nextLine());
+                    User.Role role = scanner.nextLine().equals("USER") ? User.Role.USER : User.Role.ADMIN;
+                    iur.addUser(new User(login, password, role, null));
                     break;
                 case "9":
+                    if(user.getRole().toString().equals("USER")){
+                        System.out.println("no permissions");
+                        break;
+                    }
                     System.out.println("remove user:");
                     String  removeLogin = scanner.nextLine();
                     iur.removeUser(removeLogin);

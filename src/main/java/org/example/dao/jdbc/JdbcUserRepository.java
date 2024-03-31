@@ -13,6 +13,8 @@ public class JdbcUserRepository implements IUserRepository {
 
     private static String GET_ALL_USERS_SQL = "SELECT login, password, role, rentedPlate FROM tuser";
     private static String GET_USER_SQL = "SELECT * FROM tuser WHERE login LIKE ?";
+    private static String ADD_USER = "INSERT INTO tuser (login, password, role, rentedPlate) VALUES (?,?,?,?)";
+    private static String DELETE_USER = "DELETE FROM tuser WHERE login LIKE ?";
 
     private JdbcUserRepository() {
         this.databaseManager = DatabaseManager.getInstance();
@@ -24,10 +26,11 @@ public class JdbcUserRepository implements IUserRepository {
         User user = null;
         Connection connection =null;
         ResultSet rs = null;
+        PreparedStatement preparedStatement = null;
         try{
             connection = databaseManager.getConnection();
             connection.createStatement();
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_SQL);
+            preparedStatement = connection.prepareStatement(GET_USER_SQL);
             preparedStatement.setString(1, login);
             rs = preparedStatement.executeQuery();
             if(rs.next()) {
@@ -42,20 +45,111 @@ public class JdbcUserRepository implements IUserRepository {
             throw new RuntimeException(e);
         }
         finally {
-                //TODO:close connection,statement and resultset.
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         return user;
     }
 
     @Override
     public void addUser(User user) {
-        //TODO:impement method addUser
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        try {
+            connection = databaseManager.getConnection();
+            stmt = connection.prepareStatement(ADD_USER);
+            stmt.setString(1, user.getLogin());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getRole().toString());
+            stmt.setString(4, user.getRentedPlate());
+
+            int changed = stmt.executeUpdate();
+
+            if(changed > 0){
+                System.out.println("Success");
+            }else{
+                System.out.println("Failure");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public void removeUser(String login) {
-        //TODO:implement method removeUser
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        try {
+            connection = databaseManager.getConnection();
+            User user = getUser(login);
+            if(user.getRentedPlate() != null){
+                System.out.println("ma wypozyczony samochod");
+                return;
+            }
+            stmt = connection.prepareStatement(DELETE_USER);
+            stmt.setString(1, login);
+            int changed = stmt.executeUpdate();
+            if (changed > 0) {
+                System.out.println("Success");
+            } else {
+                System.out.println("Failure");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
+
 
     @Override
     public Collection<User> getUsers() {

@@ -14,7 +14,7 @@ public class Authenticator {
             return null;
         }
 
-    private static String hashPassword(String password){
+    public static String hashPassword(String password){
         return DigestUtils.sha256Hex(password);
     }
 

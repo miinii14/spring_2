@@ -8,6 +8,11 @@ public class Motorcycle extends Vehicle {
         super(brand, model, year, price, plate);
         this.category = category;
     }
+    public Motorcycle(String brand, String model, int year, double price, String plate,String category, boolean rented) {
+        super(brand, model, year, price, plate);
+        this.category = category;
+        setRent(rented);
+    }
 
 
     public String getCategory() {
@@ -24,6 +29,8 @@ public class Motorcycle extends Vehicle {
                 super.toString()+
                 ";" + this.category;
     }
+
+
 
     @Override
     public String toString() {
