@@ -1,0 +1,13 @@
+org\example\model\User.class
+org\example\dao\jdbc\DatabaseManager.class
+org\example\authenticate\Authenticator.class
+org\example\model\Vehicle.class
+org\example\dao\IVehicleRepository.class
+org\example\model\Car.class
+org\example\model\Motorcycle.class
+org\example\dao\jdbc\JdbcVehicleRepository.class
+org\example\Main.class
+org\example\dao\IUserRepository.class
+org\example\dao\jdbc\JdbcUserRepository.class
+org\example\App.class
+org\example\model\User$Role.class
